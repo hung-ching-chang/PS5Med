@@ -24,3 +24,17 @@ CRAN.packages <- function(pkg){
 }
 CRAN.packages(c("ncvreg", "Matrix", "mvtnorm", "parallel"))
 ```
+
+
+### Code for the manuscript
+The code for the simulation section in the PS5 manuscript can be found in the folder `inst/simulation`.
+
+
+### Contact package maintainer:
+Hung-Ching Chang
+Email: rick.chang@pitt.edu
+
+## Citation:
+Chang, H.C., Fang, Y., Gorczyca, M., Batmanghelich, K., Tseng, G.C. (2024+). High-Dimensional Causal Mediation Analysis by Partial Sum Statistic and Sample Splitting Strategy in Imaging Genetics Application.
+
+
