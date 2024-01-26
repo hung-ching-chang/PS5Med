@@ -42,19 +42,27 @@ PS5(
 \item{penalty}{the penalty method. Either 'MCP' (the default), 'SCAD', or 'lasso'.}
 }
 \value{
-A \code{list} of containing mediation testing result.
+A \code{list} containing mediation testing result.
 \itemize{
-    \item{global.test: }{}
-    \item{global.me: }{}
-    \item{global.me.prop: }{}
-    \item{estimation: }{}
+    \item{global.test: }{statistical significance of global mediation effect}
+    \item{global.me: }{estimated global mediation effect}
+    \item{global.me.pct: }{estimated global mediation percentage}
+    \item{mediation.contri: }{a data.frame of individual mediation contribution}
 }
 }
 \description{
-\code{PS5} is used to estimate and test global mediation effect and individual mediation contribution for high-dimensional causal mediation analysis.
+\code{PS5} performs fast operation through a single sample split for estimating and testing global mediation effect and individual mediation contribution.#'
 }
-\details{
-XXXXXXXXXXXXXXXXXXXXXX
+\examples{
+# generate M matrix (500 samples x 1000 variables) with 10 true mediators
+M <- matrix(rnorm(500*1000), nrow = 500)
+X <- rnorm(500)
+M[,1:10] <- M[,1:10] + 0.5*X
+Y <- M[,1:10] \%*\% rep(0.5,10)
+C <- matrix(rnorm(500*2), nrow = 500)
+
+res <- PS5(M, X, Y, C)
+
 }
 \author{
 Hung-Ching Chang

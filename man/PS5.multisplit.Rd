@@ -17,7 +17,7 @@ PS5.multisplit(
   M.family = "gaussian",
   penalty = "MCP",
   multi.num = 100,
-  cores = detectCores() - 1
+  cores = 1
 )
 }
 \arguments{
@@ -29,11 +29,11 @@ PS5.multisplit(
 
 \item{C}{a matrix of confounding variables}
 
-\item{n.draw}{number of draws for parametric bootstrap}
+\item{n.draw}{number of draws for parametric bootstrap. Default is 10,000.}
 
-\item{dim.reduction}{a logical value. If 'TRUE' a sample splitting strategy with penalized regression regression is used for dimension reduction; if 'FALSE' dimension reduction procedure will be skipped. Default is 'TRUE'.}
+\item{dim.reduction}{a logical value. If 'TRUE' (default) a sample splitting strategy with penalized regression regression is used for dimension reduction; if 'FALSE' dimension reduction procedure will be skipped..}
 
-\item{seed}{a random seed}
+\item{seed}{a random seed. Default is 1004.}
 
 \item{ga}{value of gamma parameter. Default is 2.}
 
@@ -43,26 +43,29 @@ PS5.multisplit(
 
 \item{penalty}{the penalty method. Either 'MCP' (the default), 'SCAD', or 'lasso'.}
 
-\item{cores}{}
+\item{multi.num}{number of multi sample split. Default is 100.}
+
+\item{cores}{number of cores in parallel computing. Default is 1.}
 }
 \value{
-A \code{list} of containing mediation testing result.
+A \code{list} containing mediation testing result.
 \itemize{
-    \item{global.test: }{}
-    \item{global.me: }{}
-    \item{global.me.prop: }{}
-    \item{mediation.contri: }{}
-    \item{detail.global.test: }{}
-    \item{detail.global.me: }{}
-    \item{detail.global.me.prop: }{}
-    \item{detail.estimation: }{}
+    \item{global.test: }{statistical significance of global mediation effect}
+    \item{global.me: }{estimated global mediation effect}
+    \item{global.me.pct: }{estimated global mediation percentage}
+    \item{mediation.contri: }{a data.frame of individual mediation contribution}
+    \item{detail.global.test: }{a vector containing global.test from each sample split}
+    \item{detail.global.me: }{a vector containing global.me from each sample split}
+    \item{detail.global.me.pct: }{a vector containing global.me.pct from each sample split}
+    \item{detail.mediation.contri: }{ A \code{list} containing mediation.contri from each sample split}
 }
 }
 \description{
-\code{PS5} is used to estimate and test global mediation effect and individual mediation contribution for high-dimensional causal mediation analysis.
+\code{PS5.multisplit} enhances the robustness through multi sample split for estimating and testing global mediation effect and individual mediation contribution.
 }
-\details{
-write XXX
+\examples{
+XXXXXXXXXX
+
 }
 \author{
 Hung-Ching Chang

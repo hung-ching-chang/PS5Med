@@ -1,6 +1,6 @@
 #' High-dimensional mediation analysis by single sample splitting
 #'
-#' \code{PS5} is used to estimate and test global mediation effect and individual mediation contribution for high-dimensional causal mediation analysis.
+#' \code{PS5} performs fast operation through a single sample split for estimating and testing global mediation effect and individual mediation contribution.#'
 #'
 #' @param M a matrix of high-dimensional mediators. Row is samples, and column is variables.
 #' @param X a vector of exposure.
@@ -14,17 +14,24 @@
 #' @param M.family either 'gaussian' (default) or 'binomial', depending on the data type of mediator (M)
 #' @param penalty the penalty method. Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #'
-#' @details XXXXXXXXXXXXXXXXXXXXXX
 #'
-#' @return A \code{list} of containing mediation testing result.
+#' @return A \code{list} containing mediation testing result.
 #' \itemize{
-#'     \item{global.test: }{}
-#'     \item{global.me: }{}
-#'     \item{global.me.prop: }{}
-#'     \item{estimation: }{}
+#'     \item{global.test: }{statistical significance of global mediation effect}
+#'     \item{global.me: }{estimated global mediation effect}
+#'     \item{global.me.pct: }{estimated global mediation percentage}
+#'     \item{mediation.contri: }{a data.frame of individual mediation contribution}
 #' }
 #'
 #' @examples
+#' # generate M matrix (500 samples x 1000 variables) with 10 true mediators
+#' M <- matrix(rnorm(500*1000), nrow = 500)
+#' X <- rnorm(500)
+#' M[,1:10] <- M[,1:10] + 0.5*X
+#' Y <- M[,1:10] %*% rep(0.5,10)
+#' C <- matrix(rnorm(500*2), nrow = 500)
+#'
+#' res <- PS5(M, X, Y, C)
 #'
 #' @author Hung-Ching Chang
 #'
@@ -33,7 +40,7 @@
 #' @import mvtnorm
 #'
 #' @export
-PS5 <-function(
+PS5 <- function(
     M = mediators,
     X = exposure,
     Y = outcome,
@@ -63,7 +70,7 @@ PS5 <-function(
       result <- list(global.test = NA,
                      global.me = NA,
                      global.me.prop = NA,
-                     estimation = NA)
+                     mediation.contri = NA)
       return(result)
     }
     if(length(ss.result$mediator.selected) > n/2){
@@ -156,18 +163,18 @@ PS5 <-function(
   total.effect <- NDE + global.me
 
   total.me.proportion <- global.me/total.effect * 100
-  estimation <- data.frame(`alpha` = alpha,
-                           `beta` = beta,
-                           `mediation contribution` = me,
-                           `contribution proportion` = me/total.effect*100,
-                           `p value` = mediator.pval,
-                           `p value BY` = mediator.pval.BY,
-                           `p value Bonf` = mediator.pval.Bonferroni)
-  row.names(estimation) <- Mediator.name
-  estimation <- estimation[order(estimation$p.value.BY),]
+  mediation.contri <- data.frame(`alpha` = alpha,
+                                 `beta` = beta,
+                                 `mediation contribution` = me,
+                                 `contribution pct` = me/total.effect*100,
+                                 `p value` = mediator.pval,
+                                 `p value BY` = mediator.pval.BY,
+                                 `p value Bonf` = mediator.pval.Bonferroni)
+  row.names(mediation.contri) <- Mediator.name
+  mediation.contri <- mediation.contri[order(mediation.contri$p.value.BY),]
   result <- list(global.test = PS.test,
                  global.me = global.me,
                  global.me.prop = total.me.proportion,
-                 estimation = estimation)
+                 mediation.contri = mediation.contri)
   return(result)
 }
