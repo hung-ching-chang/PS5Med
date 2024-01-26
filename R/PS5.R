@@ -69,7 +69,7 @@ PS5 <- function(
       message("None of mediators are selected ...")
       result <- list(global.test = NA,
                      global.me = NA,
-                     global.me.prop = NA,
+                     global.me.pct = NA,
                      mediation.contri = NA)
       return(result)
     }
@@ -162,7 +162,7 @@ PS5 <- function(
   # total.effect <- coef(glm(Y ~ X + C, family = Y.family))[2]
   total.effect <- NDE + global.me
 
-  total.me.proportion <- global.me/total.effect * 100
+  total.me.pct <- global.me/total.effect * 100
   mediation.contri <- data.frame(`alpha` = alpha,
                                  `beta` = beta,
                                  `mediation contribution` = me,
@@ -174,7 +174,7 @@ PS5 <- function(
   mediation.contri <- mediation.contri[order(mediation.contri$p.value.BY),]
   result <- list(global.test = PS.test,
                  global.me = global.me,
-                 global.me.prop = total.me.proportion,
+                 global.me.pct = total.me.pct,
                  mediation.contri = mediation.contri)
   return(result)
 }

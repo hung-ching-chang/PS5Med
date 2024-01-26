@@ -29,7 +29,17 @@
 #'     \item{detail.mediation.contri: }{ A \code{list} containing mediation.contri from each sample split}
 #' }
 #'
-#' @examples XXXXXXXXXX
+#' @examples
+#' # generate M matrix (500 samples x 1000 variables) with 10 true mediators
+#' M <- matrix(rnorm(500*1000), nrow = 500)
+#' X <- rnorm(500)
+#' M[,1:10] <- M[,1:10] + 0.5*X
+#' Y <- M[,1:10] %*% rep(0.5,10)
+#' C <- matrix(rnorm(500*2), nrow = 500)
+#'
+#' res <- PS5.multisplit(M, X, Y, C,
+#'                       multi.num = 10,
+#'                       cores = 3)
 #'
 #' @author Hung-Ching Chang
 #'
