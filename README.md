@@ -13,7 +13,7 @@ The package can be downloaded and installed from GitHub.
 
 ```
 install.packages('devtools')
-devtools::install_github('hung-ching-chang/PS%Med')
+devtools::install_github('hung-ching-chang/PS5Med')
 ```
 If the package cannot be installed successfully, it is needed to ensure that the dependency packages are installed. This package is based on R (>= 4.0.5), and the R code for installing the dependent packages is:
 ```
