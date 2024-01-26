@@ -3,7 +3,7 @@
 ## PS5Med: Partial Sum Statistic and Sample Splitting Strategy for MEDiation analysis 
 ![GitHub release](https://img.shields.io/badge/release-v1.0.0-blue.svg)
 
-PS5Med is an R package for high-dimensional mediation analysis, including two methods (`PS5` & `PS5.multisplit`). While `PS5` performs the fast operation by single sample split, `PS5.multisplit` provides more robust mediation analysis by multi sample split. The figure below shows the framework of our method. 
+PS5Med is an R package designed for high-dimensional mediation analysis, featuring two methods: (`PS5` & `PS5.multisplit`). While `PS5` performs fast operation through a single sample split, `PS5.multisplit` enhances the robustness of mediation analysis by employing multiple sample split. The framework of our method is illustrated in the figure below.
 
 <img src="man/figure/framework-PS5.png" width="4500">
 
