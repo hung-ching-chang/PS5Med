@@ -1,46 +1,59 @@
-#' @title Mediation analysis using partial sum statistic and sample splitting
+#' High-dimensional mediation analysis by multiple sample splitting
 #'
-#' @description aggregate p-value from multi-split result
+#' \code{PS5} is used to estimate and test global mediation effect and individual mediation contribution for high-dimensional causal mediation analysis.
 #'
-#' @param M 	  # n-by-p matrix
-#' @param X 	  # n      vector
-#' @param Y     # n      vector
-#' @param C   	# n-by-l matrix, not including intercept
-#' @param n.draw 	# no. of parametric bootstrapping sample
-#' @param dim.reduction, # dimension reduction
-#' @param seed
-#' @param ga           # gamma
-#' @param Y.family
-#' @param M.family
-#' @param pre.selection
-#' @param lambda.selection
+#' @param M a matrix of high-dimensional mediators. Row is samples, and column is variables.
+#' @param X a vector of exposure.
+#' @param Y a vector of outcome.
+#' @param C a matrix of confounding variables
+#' @param n.draw number of draws for parametric bootstrap
+#' @param dim.reduction a logical value. If 'TRUE' a sample splitting strategy with penalized regression regression is used for dimension reduction; if 'FALSE' dimension reduction procedure will be skipped. Default is 'TRUE'.
+#' @param seed a random seed
+#' @param ga value of gamma parameter. Default is 2.
+#' @param Y.family either 'gaussian' (default) or 'binomial', depending on the data type of outcome (Y)
+#' @param M.family either 'gaussian' (default) or 'binomial', depending on the data type of mediator (M)
+#' @param penalty the penalty method. Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #' @param multi.num
 #' @param cores
 #'
 #' @details write XXX
 #'
-#' @return XXXXXX
+#' @return A \code{list} of containing mediation testing result.
+#' \itemize{
+#'     \item{global.test: }{}
+#'     \item{global.me: }{}
+#'     \item{global.me.prop: }{}
+#'     \item{mediation.contri: }{}
+#'     \item{detail.global.test: }{}
+#'     \item{detail.global.me: }{}
+#'     \item{detail.global.me.prop: }{}
+#'     \item{detail.estimation: }{}
+#' }
 #'
 #' @examples
 #'
 #' @author Hung-Ching Chang
-#' @seealso \code{\link{PS5_mediation}}
+#'
+#' @import ncvreg
+#' @import Matrix
+#' @import mvtnorm
+#' @import parallel
+#'
 #' @export
-#' @import
-PS5.multi.split <- function(
-    M = mediators,		  # n-by-p matrix
-    X = exposure,		  	# n      vector
-    Y = outcome,			  # n      vector
-    C = conf,		       	# n-by-q matrix, not including intercept
-    n.draw = 10000,	  	# no. of parametric bootstrapping sample
-    dim.reduction = NA, # dimension reduction
+PS5.multisplit <- function(
+    M = mediators,
+    X = exposure,
+    Y = outcome,
+    C = conf,
+    n.draw = 10000,
+    dim.reduction = TRUE,
     seed = 1004,
+    ga = 2,
     Y.family = "gaussian",
     M.family = "gaussian",
-    pre.selection = "MCP",
+    penalty = "MCP",
     multi.num = 100,
-    cores = detectCores()-1,
-    ga = 2
+    cores = detectCores() - 1
 ){
   # multi-split
   result <- mclapply(c(1:multi.num),
@@ -48,13 +61,13 @@ PS5.multi.split <- function(
                                                X = X,
                                                Y = Y,
                                                C = C,
+                                               n.draw = n.draw,
                                                dim.reduction = dim.reduction,
                                                seed = (i+seed),
-                                               n.draw = n.draw,
+                                               ga = ga,
                                                Y.family = Y.family,
                                                M.family = M.family,
-                                               pre.selection = pre.selection,
-                                               ga = ga),
+                                               penalty = penalty),
                      mc.cores = cores)
   # summaize result
   PS5.global.me <- PS5.global.test <- PS5.total.me.proportion <- rep(NA,multi.num)

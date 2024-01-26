@@ -1,21 +1,20 @@
-#' @title Mediation analysis using partial sum statistic and sample splitting
+#' High-dimensional mediation analysis by single sample splitting
 #'
-#' @description XXXXX
+#' \code{PS5} is used to estimate and test global mediation effect and individual mediation contribution for high-dimensional causal mediation analysis.
 #'
-#' @param M 	  # n-by-p matrix
-#' @param X 	  # n      vector
-#' @param Y     # n      vector
-#' @param C   	# n-by-l matrix, not including intercept
-#' @param n.draw 	# no. of parametric bootstrapping sample
-#' @param dim.reduction, # dimension reduction
-#' @param seed
-#' @param ga           # gamma
-#' @param Y.family
-#' @param M.family
-#' @param pre.selection
-#' @param lambda.selection
+#' @param M a matrix of high-dimensional mediators. Row is samples, and column is variables.
+#' @param X a vector of exposure.
+#' @param Y a vector of outcome.
+#' @param C a matrix of confounding variables
+#' @param n.draw number of draws for parametric bootstrap
+#' @param dim.reduction a logical value. If 'TRUE' a sample splitting strategy with penalized regression regression is used for dimension reduction; if 'FALSE' dimension reduction procedure will be skipped. Default is 'TRUE'.
+#' @param seed a random seed
+#' @param ga value of gamma parameter. Default is 2.
+#' @param Y.family either 'gaussian' (default) or 'binomial', depending on the data type of outcome (Y)
+#' @param M.family either 'gaussian' (default) or 'binomial', depending on the data type of mediator (M)
+#' @param penalty the penalty method. Either 'MCP' (the default), 'SCAD', or 'lasso'.
 #'
-#' @details write XXX
+#' @details XXXXXXXXXXXXXXXXXXXXXX
 #'
 #' @return A \code{list} of containing mediation testing result.
 #' \itemize{
@@ -28,22 +27,24 @@
 #' @examples
 #'
 #' @author Hung-Ching Chang
-#' @seealso \code{\link{sample.splitting.dim.reduction}, \link{PS5_multi_split}}
+#'
+#' @import ncvreg
+#' @import Matrix
+#' @import mvtnorm
+#'
 #' @export
-#' @import
-PS5.mediation <-function(
-    M = mediators,		  # n-by-p matrix
-    X = exposure,		  	# n      vector
-    Y = outcome,			  # n      vector
-    C = conf,		       	# n-by-l matrix, not including intercept
-    n.draw = 10000,	  	# no. of parametric bootstrapping sample
-    dim.reduction = NA, # dimension reduction
+PS5 <-function(
+    M = mediators,
+    X = exposure,
+    Y = outcome,
+    C = conf,
+    n.draw = 10000,
+    dim.reduction = TRUE,
     seed = 1004,
-    ga = 2,              # gamma
+    ga = 2,
     Y.family = "gaussian",
     M.family = "gaussian",
-    pre.selection = "MCP",
-    lambda.selection = "BIC"
+    penalty = "MCP"
 ){
   set.seed(seed)
   Mediator.name <- colnames(M)
@@ -53,12 +54,10 @@ PS5.mediation <-function(
   ######################## dimension reduction #########################
   ##################### (sample splitting method) ######################
   ######################################################################
-  if(is.na(dim.reduction)){dim.reduction <- (n < 5*p)}
   if(dim.reduction){
-    ss.result <- sample.splitting.dim.reduction(M,X,Y,C,
-                                                Y.family = Y.family,
-                                                penalty.type = pre.selection,
-                                                lambda.selection = lambda.selection)
+    ss.result <- sample.splitting(M,X,Y,C,
+                                  Y.family = Y.family,
+                                  penalty.type = penalty)
     if(length(ss.result$mediator.selected) == 0){
       message("None of mediators are selected ...")
       result <- list(global.test = NA,
