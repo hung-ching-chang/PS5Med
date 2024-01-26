@@ -67,8 +67,8 @@ A \code{list} containing mediation testing result.
 # generate M matrix (500 samples x 1000 variables) with 10 true mediators
 M <- matrix(rnorm(500*1000), nrow = 500)
 X <- rnorm(500)
-M[,1:10] <- M[,1:10] + 0.5*X
-Y <- M[,1:10] \%*\% rep(0.5,10)
+M[,1:5] <- M[,1:5] + 0.5*X
+Y <- M[,1:10] \%*\% rep(0.5,10) + rnorm(500, 0, 3)
 C <- matrix(rnorm(500*2), nrow = 500)
 
 res <- PS5.multisplit(M, X, Y, C,

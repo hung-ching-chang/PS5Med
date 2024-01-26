@@ -24,16 +24,11 @@
 #' }
 #'
 #' @examples
-#' library(mvtnorm)
-#' # generate M matrix (500 samples x 1000 variables) with 10 true mediators
-#' p <- 1000; cov <- 0.3
-#' exponent <- abs(matrix(1:p - 1, nrow = p, ncol = p, byrow = TRUE) - (1:p - 1))
-#' v <- cov^exponent
-#' M <- rmvnorm(500, mean = rep(0, p), v)
+#' # generate M matrix (500 samples x 1000 variables) with 5 true mediators
 #' M <- matrix(rnorm(500*1000), nrow = 500)
 #' X <- rnorm(500)
-#' M[,1:10] <- M[,1:10] + 0.1*X
-#' Y <- M[,1:10] %*% rep(0.1,10)
+#' M[,1:5] <- M[,1:5] + 0.5*X
+#' Y <- M[,1:10] %*% rep(0.5,10) + rnorm(500, 0, 3)
 #' C <- matrix(rnorm(500*2), nrow = 500)
 #'
 #' res <- PS5(M, X, Y, C)
