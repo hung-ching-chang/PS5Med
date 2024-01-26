@@ -7,7 +7,7 @@ PS5Med is an R package for high-dimensional mediation analysis, including two me
 
 <img src="man/figure/framework-PS5.png" width="4500">
 
-### Installation
+## Installation
 
 The package can be downloaded and installed from GitHub.
 
@@ -27,11 +27,11 @@ CRAN.packages(c("ncvreg", "Matrix", "mvtnorm", "parallel"))
 ```
 
 
-### Code for the manuscript
+## Code for the manuscript
 The code for the simulation section in the PS5 manuscript can be found in the folder `inst/simulation`.
 
 
-### Contact package maintainer:
+## Contact package maintainer:
 Hung-Ching Chang
 Email: rick.chang@pitt.edu
 
