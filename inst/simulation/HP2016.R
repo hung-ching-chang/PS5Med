@@ -5,18 +5,18 @@ HP2016 <-function(
     Y = outcome,		      	# n-by-1 matrix
     C = conf,		          	# n-by-q matrix, not including intercept
     n.draw = 1000,	      	# no. of Monte-Carlo resampling
-    adaptive.ratio = 0.8    # dimension reduction   
+    adaptive.ratio = 0.8    # dimension reduction
 ){
   set.seed(1004)
   n <- dim(M)[1]
   p <- dim(M)[2]
-  
+
   ### transformation
   fit.m <- lm(M~C+X)
   Sigma <- cov(fit.m$residual) # covariance matrix of error term
   svds <- tryCatch(svd(Sigma),
                    error=function(e) NULL)
-  if(is.null(svds)){return(list(HP2016 = NA, 
+  if(is.null(svds)){return(list(HP2016 = NA,
                                 global.me = NA))}
   if (adaptive.ratio != 1){
     n.factor<-sum(cumsum(svds$d)/sum(svds$d)<adaptive.ratio)+1
@@ -26,7 +26,7 @@ HP2016 <-function(
     U<-svds$u
   }
   M.star <- M%*%U
-  
+
   ### estimation
   fit.m2 <- lm(M.star~C+X)
   if(p>1){
@@ -48,16 +48,16 @@ HP2016 <-function(
     alpha.star <- fit.m2$coef["X"]   # alpha star estimation
   }
   me.star <- beta.star*alpha.star # mediation effect = alpha * beta
-  
+
   ### covariance
   Z <- cbind(1, X, C, M.star)
   info <- t(Z)%*%Z
   cov2.star <- min(mse) * solve(info)[2+ncol(C)+1:p, 2+ncol(C)+1:p]
   bcov <- bdiag(cov1.star, cov2.star)  # block diagonal matrix
-  
+
   ### L2 norm method (Huang and Pan 2016)
-  theta.mc <- rmvnorm(n.draw, 
-                      mean = c(alpha.star, beta.star), 
+  theta.mc <- rmvnorm(n.draw,
+                      mean = c(alpha.star, beta.star),
                       sigma = as.matrix(bcov))
   alpha.mc <- theta.mc[,1:p]
   beta.mc <- theta.mc[,p+1:p]
@@ -65,26 +65,8 @@ HP2016 <-function(
   me.mc.c <- t(t(me.mc) - apply(me.mc, 2, mean))
   T.mc <- apply(me.mc.c^2, 1, sum)	# T statistic
   pval.L2 <- mean(T.mc > sum(me.star^2))
-  
-  
-  # sigma2 estimation based on Dicker 2014
-  #lasso.cv <- cv.glmnet(x=cbind(C, X, M), y=Y, 
-  #                      family='gaussian', nfolds = 5)
-  #res <- Y - predict(lasso.cv, newx = cbind(C, X, M), s = "lambda.min")
-  #est.sigma2 <- sum(res^2)/(n-lasso.cv$nzero[lasso.cv$index[1]])
-  #if(est.sigma2 == Inf){return(c(NA,NA))}
-  #cov2.star <- est.sigma2 * solve(info)[2+ncol(C)+1:p, 2+ncol(C)+1:p]
-  #bcov <- bdiag(cov1.star, cov2.star)  # block diagonal matrix
-  #theta.mc <- rmvnorm(n.draw, 
-  #                    mean = c(alpha.star, beta.star), 
-  #                    sigma = as.matrix(bcov))
-  #alpha.mc <- theta.mc[,1:p]
-  #beta.mc <- theta.mc[,p+1:p]
-  #me.mc <- alpha.mc*beta.mc   # alpha * beta
-  #me.mc.c <- t(t(me.mc) - apply(me.mc, 2, mean))
-  #T.mc <- apply(me.mc.c^2, 1, sum)	# T statistic
-  #pval.L2.adjusted <- mean(T.mc > sum(me.star^2))
-  return(list(HP2016 = pval.L2, 
+
+  return(list(HP2016 = pval.L2,
               global.me = sum(me.star)))
 }
 
