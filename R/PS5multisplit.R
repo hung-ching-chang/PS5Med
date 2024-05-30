@@ -100,9 +100,9 @@ PS5.multisplit <- function(
   tmp.mc <- result[[unbiased.seed]]$mediation.contri$contribution.pct
   positive.global.me.pct <- sum(tmp.mc[tmp.mc > 0])
   negative.global.me.pct <- sum(tmp.mc[tmp.mc < 0])
-  global.me.pct <- c(quantile(detailed.total.me.pct, .5, type = 1, na.rm = T),
-                      positive.global.me.pct,
-                      negative.global.me.pct)
+  global.me.pct <- c(result[[unbiased.seed]]$global.me.pct,
+                     positive.global.me.pct,
+                     negative.global.me.pct)
   names(global.me.pct) <- c("total", "positive", "negative")
 
   #p-value aggregation
